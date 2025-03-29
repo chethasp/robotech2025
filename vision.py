@@ -11,6 +11,13 @@ def main():
 
     # Create an AprilTag detector
     detector = AprilTagDetector()
+    config = detector.Config()
+
+    config.decodeSharpening = 0.75
+    config.quadSigma = 0.4
+    config.quadDecimate = 1
+
+    detector.setConfig(config)
     detector.addFamily("tag36h11")
 
     while True:
@@ -23,6 +30,7 @@ def main():
 
         # Convert the frame to grayscale (needed for AprilTag detection)
         gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        cv2.imshow('Process', gray_frame)
 
         # Detect AprilTags in the grayscale frame
         detections = detector.detect(gray_frame)
@@ -32,7 +40,7 @@ def main():
             print(f"Detected tag ID: {detection.getId()}")
 
             
-            print(f"Tag position (pose): {detection.getCenter()}")
+            print(f"Tag center: {detection.getCenter()}")
             # Optionally, draw a rectangle around the tag (you can modify the detection area here)
             corner0 = detection.getCorner(0)  # Top-left
             corner2 = detection.getCorner(2)  # Bottom-right
