@@ -2,11 +2,15 @@
 #include <WiFi.h>
 #include <ArduinoJson.h>
 
-// Motor pins (adjust these to your actual setup)
-const int rightFrontPin = 2;  // D2
-const int leftFrontPin = 3;   // D3
-const int rightBackPin = 4;   // D4
-const int leftBackPin = 5;    // D5
+// Motor pins (your setup)
+const int rightFrontPin = 25;  // D25
+const int leftFrontPin = 32;   // D32
+const int rightBackPin = 26;   // D26
+const int leftBackPin = 33;    // D33
+
+// Timeout settings
+const unsigned long timeoutDuration = 5000;  // 10 seconds (adjust as needed)
+unsigned long lastDataTime = 0;  // Timestamp of last received data
 
 void OnDataRecv(const esp_now_recv_info_t *recvInfo, const uint8_t *incomingData, int len) {
   char buffer[128];
@@ -17,7 +21,7 @@ void OnDataRecv(const esp_now_recv_info_t *recvInfo, const uint8_t *incomingData
     Serial.println(buffer);
 
     // Parse JSON
-    StaticJsonDocument<200> doc;  // Buffer size for JSON
+    StaticJsonDocument<200> doc;
     DeserializationError error = deserializeJson(doc, buffer);
 
     if (error) {
@@ -37,6 +41,9 @@ void OnDataRecv(const esp_now_recv_info_t *recvInfo, const uint8_t *incomingData
     digitalWrite(leftFrontPin, leftFront ? HIGH : LOW);
     digitalWrite(rightBackPin, rightBack ? HIGH : LOW);
     digitalWrite(leftBackPin, leftBack ? HIGH : LOW);
+
+    // Update last data time
+    lastDataTime = millis();
 
     // Debug output
     Serial.println("Motor states:");
@@ -60,6 +67,12 @@ void setup() {
   pinMode(rightBackPin, OUTPUT);
   pinMode(leftBackPin, OUTPUT);
 
+  // Initialize motors to off
+  digitalWrite(rightFrontPin, LOW);
+  digitalWrite(leftFrontPin, LOW);
+  digitalWrite(rightBackPin, LOW);
+  digitalWrite(leftBackPin, LOW);
+
   WiFi.mode(WIFI_STA);
   if (esp_now_init() != ESP_OK) {
     Serial.println("Error initializing ESP-NOW");
@@ -72,5 +85,16 @@ void setup() {
 }
 
 void loop() {
-  // Nothing here
+  // Check if too much time has passed since last data
+  if (millis() - lastDataTime > timeoutDuration) {
+    // No data received within timeout, default to 0
+    digitalWrite(rightFrontPin, LOW);
+    digitalWrite(leftFrontPin, LOW);
+    digitalWrite(rightBackPin, LOW);
+    digitalWrite(leftBackPin, LOW);
+
+    // Optional debug output (comment out if not needed)
+    Serial.println("No data received, motors set to 0");
+    // delay(1000);  // Slow down debug prints
+  }
 }
