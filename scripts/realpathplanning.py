@@ -185,8 +185,8 @@ def create_path(image_path):
     cv2.destroyAllWindows()
 
     # Save the grid
-    np.save("occupancy_grid_with_path.npy", grid)
+    np.save("occupancygrids/occupancy_grid_with_path.npy", grid)
 
     return path
 
-create_path("images/grid.png")
+# create_path("images/grid.png")

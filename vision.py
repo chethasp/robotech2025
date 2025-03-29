@@ -75,7 +75,7 @@ def main():
             if unwrapped_yaw < 0:
                 unwrapped_yaw += 360
 
-            text = f"ID: {detection.getId()}, Rot: {unwrapped_yaw:.1f}°"
+            # text = f"ID: {detection.getId()}, Rot: {unwrapped_yaw:.1f}°"
             text_position = (pt1[0], pt1[1] - 10)  
             cv2.putText(
                 frame,
@@ -89,7 +89,7 @@ def main():
             )                
 
         # Display the frame with detected tags
-        cv2.imshow('AprilTag Detection', frame)
+        # cv2.imshow('AprilTag Detection', frame)
 
         # Exit if 'q' is pressed
         if cv2.waitKey(1) & 0xFF == ord('q'):
