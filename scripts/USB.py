@@ -11,7 +11,10 @@ except serial.SerialException as e:
 
 # Simulated motor data (you can modify this as needed)
 motor_data = {
-    'speed': 100,
+    'rightFront': 1,
+    'leftFront': 1,
+    'rightBack': 1,
+    'leftBack': 1,
 }
 
 print("Starting direct serial writer...")
