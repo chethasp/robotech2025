@@ -2,7 +2,9 @@ import serial
 import time
 import json
 import random
+
 from realpathplanning import create_path
+from vision import get_robot_heading, get_current_frame
 
 # Configure serial port
 try:

@@ -6,15 +6,15 @@ from collections import deque
 # Constants
 GRID_SIZE = 100
 ROBOT_RADIUS = 2  # 5x5 robot in 100x100 grid
-SAFE_DISTANCE = 10  # Buffer zone size
+SAFE_DISTANCE = 4  # Buffer zone size
 MIN_CLUSTER_SIZE = 25  # Minimum size for obstacle clusters
 
-def create_path(image_path):
+def create_path(image):
     # Load the PNG image
     # image_path = "images/grid.png"
-    image = cv2.imread(image_path)
-    if image is None:
-        raise FileNotFoundError(f"Could not load image at {image_path}")
+    # image = cv2.imread(image_path)
+    # if image is None:
+    #     raise FileNotFoundError(f"Could not load image at {image_path}")
 
     # Convert to grayscale for AprilTag detection
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -38,7 +38,7 @@ def create_path(image_path):
             dest_pos = (x, y)
 
     if robot_pos is None or dest_pos is None:
-        raise ValueError("Could not find both AprilTags (ID 4 and ID 2)")
+        return np.zeros((100, 100, 3), dtype=np.uint8)
 
     print(f"Robot position: {robot_pos}")
     print(f"Destination position: {dest_pos}")
@@ -179,14 +179,17 @@ def create_path(image_path):
     grid_display = cv2.resize(grid_visual, (500, 500), interpolation=cv2.INTER_NEAREST)
 
     # Display both images
-    cv2.imshow("Original Image", original_display)
-    cv2.imshow("Occupancy Grid with Path", grid_display)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+    # cv2.imshow("Original Image", original_display)
+    # cv2.imshow("Occupancy Grid with Path", grid_display)
+    # cv2.waitKey(0)
+    # cv2.destroyAllWindows()
 
     # Save the grid
-    np.save("occupancygrids/occupancy_grid_with_path.npy", grid)
+    # np.save("occupancygrids/occupancy_grid_with_path.npy", grid)
 
-    return path
+    # if path is None:
+    #     return np.zeros((100, 100, 3), dtype=np.uint8)
+
+    return grid_display
 
 # create_path("images/grid.png")
